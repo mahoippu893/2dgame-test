@@ -135,11 +135,12 @@ public class DungeonMap : IGeneratableDungeon {
                     if (x < FloorCountX - 1) {
 
                         // 通路のX軸を取得
+                        // 自分の部屋のX軸 と 右の部屋のX軸 の中間をランダムで取得
                         int streetX = Random.Range(floorList[x, y].X + floorList[x, y].W + 1, floorList[x + 1, y].X + 1);
 
                         // ----
 
-                        // 自分の部屋のどこかの高さにランダムにポイントを生成
+                        // 自分の部屋のどこかのY軸にランダムにポイントを生成
                         int currentStreetStartY = Random.Range(floorList[x, y].Y, floorList[x, y].Y + floorList[x, y].H + 1);
 
                         // 自分の部屋から通路まで道を伸ばす
@@ -154,7 +155,7 @@ public class DungeonMap : IGeneratableDungeon {
 
                         // ----
 
-                        // 右側の部屋のどこかの高さにランダムにポイントを生成
+                        // 右側の部屋のどこかのY軸にランダムにポイントを生成
                         int rightStreetStartY = Random.Range(floorList[x + 1, y].Y, floorList[x + 1, y].Y + floorList[x + 1, y].H + 1);
 
                         // 右側の部屋から通路まで道を伸ばす
@@ -203,11 +204,12 @@ public class DungeonMap : IGeneratableDungeon {
                     if (y < FloorCountY - 1) {
 
                         // 通路のY軸を取得
+                        // 自分の部屋のY軸 と 右の部屋のY軸 の中間をランダムで取得
                         int streetY = Random.Range(floorList[x, y].Y + floorList[x, y].H + 1, floorList[x, y + 1].Y + 1);
 
                         // ----
 
-                        // 自分の部屋のどこかの高さにランダムにポイントを生成
+                        // 自分の部屋のどこかのX軸にランダムにポイントを生成
                         int currentStreetStartX = Random.Range(floorList[x, y].X, floorList[x, y].X + floorList[x, y].W + 1);
 
                         // 自分の部屋から通路まで道を伸ばす
@@ -222,7 +224,7 @@ public class DungeonMap : IGeneratableDungeon {
 
                         // ----
 
-                        // 右側の部屋のどこかの高さにランダムにポイントを生成
+                        // 右側の部屋のどこかのX軸にランダムにポイントを生成
                         int rightStreetStartX = Random.Range(floorList[x, y + 1].X, floorList[x, y + 1].X + floorList[x, y + 1].W + 1);
 
                         // 右側の部屋から通路まで道を伸ばす
