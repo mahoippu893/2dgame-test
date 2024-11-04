@@ -9,6 +9,15 @@ using UnityEngine.UIElements;
 public class PlayerGameObject : BaseCharacterGameObject {
 
     // ==================================================
+    // プロパティ
+    // ==================================================
+
+    /// <summary>
+    ///     自身と対応するモデル
+    /// </summary>
+    public Player Player { get; set; } = new Player();
+
+    // ==================================================
     // Eventハンドラ
     // ==================================================
 
