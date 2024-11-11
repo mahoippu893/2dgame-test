@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-///     ダンジョン生成可能なクラスに実装するインターフェース
+///     キャラクターの位置情報を設定可能なクラスに実装するインターフェース
 /// </summary>
-public interface IGeneratableDungeon {
+public interface ISetableCharacterPosition {
 
     // ==================================================
     // Publicメソッド
     // ==================================================
 
     /// <summary>
-    ///     ダンジョンを生成する
+    ///     プレイヤーの位置を設定する
     /// </summary>
-    public void GenerateDungeon(IViewableDungeon viewer, ISetableCharacterPosition posSetter);
+    public void SetPlayerPosition(int x, int y);
 }

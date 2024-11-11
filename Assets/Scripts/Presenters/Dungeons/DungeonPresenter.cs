@@ -47,8 +47,8 @@ public class DungeonPresenter {
     /// <summary>
     ///     ƒ_ƒ“ƒWƒ‡ƒ“‚Ì¶¬‚ğs‚¤
     /// </summary>
-    public static void GenerateDungeon(IGeneratableDungeon generator, IViewableDungeon viewer) {
+    public static void GenerateDungeon(IGeneratableDungeon generator, IViewableDungeon viewer, ISetableCharacterPosition posSetter) {
 
-        generator.GenerateDungeon(viewer);
+        generator.GenerateDungeon(viewer, posSetter);
     }
 }

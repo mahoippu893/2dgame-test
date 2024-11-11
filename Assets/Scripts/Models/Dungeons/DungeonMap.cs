@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -76,7 +77,7 @@ public class DungeonMap : IGeneratableDungeon {
     /// <summary>
     ///     マップ情報を初期化する
     /// </summary>
-    public void GenerateDungeon(IViewableDungeon viewer) {
+    public void GenerateDungeon(IViewableDungeon viewer, ISetableCharacterPosition posSetter) {
 
         DungeonFloorInfo[,] floorList = new DungeonFloorInfo[FloorCountX, FloorCountY];
 
@@ -274,7 +275,7 @@ public class DungeonMap : IGeneratableDungeon {
 
             for (int i = 0; i < floor.W; i++) {
                 for (int j = 0; j < floor.H; j++) {
-                    result.Add(new DungeonMapTipInfo(floor.X + i, floor.Y + j, true));
+                    result.Add(new DungeonMapTipInfo(floor.X + i, floor.Y + j, DungeonMapTipType.Floor));
                 }
             }
         }
@@ -282,7 +283,7 @@ public class DungeonMap : IGeneratableDungeon {
 
             for (int i = 0; i < street.W; i++) {
                 for (int j = 0; j < street.H; j++) {
-                    result.Add(new DungeonMapTipInfo(street.X + i, street.Y + j, true));
+                    result.Add(new DungeonMapTipInfo(street.X + i, street.Y + j, DungeonMapTipType.Street));
                 }
             }
         }
@@ -298,19 +299,58 @@ public class DungeonMap : IGeneratableDungeon {
             for (int y = 0; y < bottomWall; y++) {
 
                 if (result.FirstOrDefault(item => item.X == x && item.Y == y) is null) {
-                    result.Add(new DungeonMapTipInfo(x, y, false));
+                    result.Add(new DungeonMapTipInfo(x, y, DungeonMapTipType.Wall));
                 }
             }
         }
 
 
+        // 床からランダムに一つ取得し、階段を設定する
+        while (result.Count(x => x.Type == DungeonMapTipType.Stair) == 0) {
+
+            int randIndex = Random.Range(0, result.Count);
+
+            try {
+                if (result[randIndex].Type == DungeonMapTipType.Floor) {
+                    result[randIndex].Type = DungeonMapTipType.Stair;
+                    break;
+                }
+            } catch { }
+        }
+
+        // 床からランダムに一つ取得し、スタート地点を設定する
+        while (result.Count(x => x.Type == DungeonMapTipType.StartPoint) == 0) {
+
+            int randIndex = Random.Range(0, result.Count);
+
+            try {
+                if (result[randIndex].Type == DungeonMapTipType.Floor) {
+                    result[randIndex].Type = DungeonMapTipType.StartPoint;
+                    break;
+                }
+            } catch { }
+        }
+
+
         // 画面に表示
         foreach (var item in result) {
-            
-            if (item.IsFloor) {
-                viewer.ViewFloor(item.X, item.Y);
-            } else {
-                viewer.ViewWall(item.X, item.Y);
+
+            switch (item.Type) {
+                case DungeonMapTipType.Floor:
+                case DungeonMapTipType.Street:
+                    viewer.ViewFloor(item.X, item.Y);
+                    break;
+                case DungeonMapTipType.Wall:
+                    viewer.ViewWall(item.X, item.Y);
+                    break;
+                case DungeonMapTipType.Stair:
+                    viewer.ViewFloor(item.X, item.Y);
+                    viewer.ViewStair(item.X, item.Y);
+                    break;
+                case DungeonMapTipType.StartPoint:
+                    viewer.ViewFloor(item.X, item.Y);
+                    posSetter.SetPlayerPosition(item.X, item.Y);
+                    break;
             }
         }
     }
@@ -356,6 +396,18 @@ public class DungeonMap : IGeneratableDungeon {
         }
     }
 
+
+    /// <summary>
+    ///     マップチップの種類
+    /// </summary>
+    private enum DungeonMapTipType {
+        Floor,
+        Street,
+        Wall,
+        Stair,
+        StartPoint
+    }
+
     /// <summary>
     ///     マップチップの情報
     /// </summary>
@@ -372,17 +424,17 @@ public class DungeonMap : IGeneratableDungeon {
         public int Y { get; private set; }
 
         /// <summary>
-        ///     床か？
+        ///     マップチップの種類
         /// </summary>
-        public bool IsFloor { get; private set; }
+        public DungeonMapTipType Type { get; set; }
 
         /// <summary>
         ///     コンストラクタ
         /// </summary>
-        public DungeonMapTipInfo(int x, int y, bool isFloor) {
+        public DungeonMapTipInfo(int x, int y, DungeonMapTipType type) {
             X = x;
             Y = y;
-            IsFloor = isFloor;
+            Type = type;
         }
     }
 }

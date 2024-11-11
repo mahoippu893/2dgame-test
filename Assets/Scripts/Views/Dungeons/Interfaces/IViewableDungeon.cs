@@ -20,4 +20,9 @@ public interface IViewableDungeon {
     ///     ダンジョンの歩行不可な壁を表示する
     /// </summary>
     public void ViewWall(int x, int y);
+
+    /// <summary>
+    ///     ダンジョンの階段を表示する
+    /// </summary>
+    public void ViewStair(int x, int y);
 }
